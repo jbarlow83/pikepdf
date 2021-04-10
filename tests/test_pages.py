@@ -274,14 +274,19 @@ def test_concatenate(resources, outdir):
 
 
 def test_emplace(fourpages):
+    p0_parent_objgen = fourpages.pages[0].Parent.objgen
+    # make sure testfile has different parents for p0 and p1
+    assert p0_parent_objgen != fourpages.pages[1].Parent.objgen
     p0_objgen = fourpages.pages[0].objgen
     fourpages.pages[0].SpecialKey = "This string will be deleted"
     fourpages.pages[0].emplace(fourpages.pages[1])
     assert p0_objgen == fourpages.pages[0].objgen
     assert fourpages.pages[0].keys() == fourpages.pages[1].keys()
     for k in fourpages.pages[0].keys():
-        assert fourpages.pages[0][k] == fourpages.pages[1][k]
+        if k != '/Parent':
+            assert fourpages.pages[0][k] == fourpages.pages[1][k]
     assert Name.SpecialKey not in fourpages.pages[0]
+    assert p0_parent_objgen == fourpages.pages[0].Parent.objgen
 
 
 def test_emplace_foreign(fourpages, sandwich):

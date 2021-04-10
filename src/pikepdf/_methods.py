@@ -184,8 +184,10 @@ class Extend_Object:
         """
         if not self.same_owner_as(other):
             raise TypeError("Objects must have the same owner for emplace()")
-        del_keys = set(self.keys()) - set(other.keys())
-        for k in other.keys():
+        other_keys = set(other.keys())
+        del_keys = set(self.keys()) - other_keys
+        other_keys.discard('/Parent')
+        for k in other_keys:
             self[k] = other[k]  # pylint: disable=unsupported-assignment-operation
         for k in del_keys:
             del self[k]  # pylint: disable=unsupported-delete-operation
